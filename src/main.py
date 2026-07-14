@@ -1,77 +1,73 @@
-class Task:
-    def __init__(self, title, complete):
-        self.title = title
-        self.complete = complete
+import manager as mn
 
 
-print("=== Task Tracker (без сохранения) ===")
-print("Команды: add / list / done / delete / exit")
-list = list()
+mn.load_tasks()
+
+
+def show_menu():
+    while True:
+        lang = input("Choose language (rus/eng): ").strip().lower()
+        if lang == "rus":
+            print("""
+<команда> <аргумент(если есть)> <описание>
+
+Команды:
+
+add <название>  <описание> : создать и дать название |
+list : список задач |
+complete <title> / <all> : задача выполнена / все задачи выполнены |
+delete <title> / <all> : удалить задачу / удалить все |
+exit : выйти |
+""")
+            break
+
+        elif lang == "eng":
+            print("""
+<command> <argument (if any)> <description>
+
+Commands:
+
+add <text> : create a new task |
+list : show all tasks |
+complete <title> / <all> : mark a task / all tasks as completed |
+delete <title> / <all> : delete a task / delete all tasks |
+exit : exit the program |
+""")
+            break
+
+print("""
+=== Task Tracker ===
+""")
+
+
+show_menu()
+
+
 while True:
-    a = input("").strip()
-    if a == "add":
-        b = input("Введите текст: ")
-        list.append(Task(b, False))
-    elif a == "list":
-        for i in list:
-            print(f"{i.title} {i.complete}")
-    elif a == "exit":
+    command = input("> ").strip().lower()
+    parts = command.split(maxsplit=2)
+
+    if not command:
+        continue
+
+    if parts[0] == "add" and len(parts) == 3:
+        mn.add_task(parts[1], parts[2])
+        mn.save_tasks()
+
+    elif parts[0] == "list":
+        mn.list_tasks()
+    
+    elif parts[0] == "exit":
+        mn.save_tasks()
         break
-    elif a == "delete":
-        b = input("Введите название: ")
-        for i in list:
-            if i.title == b:
-                list.remove(i)
-    elif a == "done":
-        b = input("Введите название")
-        for i in list:
-            if i.title == b:
-                i.complete = True
+    
+    elif parts[0] == "delete" and len(parts) == 2:
+        mn.delete_task(parts[1])
+        mn.save_tasks()
+    
+    elif parts[0] == "complete" and len(parts) == 2:
+        mn.complete_task(parts[1])
+        mn.save_tasks()
+    
     else:
-        print("Неизвестная комманда")
-
-        
-    
-                
-                
-    
-
-
-
-        
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        print("Unknown command or invalid argument.")    
